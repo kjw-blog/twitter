@@ -5,7 +5,7 @@ import zLogo from '../../public/zlogo.png';
 
 export default function Home() {
   return (
-    <div>
+    <>
       <div className={styles.left}>
         <Image src={zLogo} alt="logo" />
       </div>
@@ -20,6 +20,6 @@ export default function Home() {
           로그인
         </Link>
       </div>
-    </div>
+    </>
   );
 }
