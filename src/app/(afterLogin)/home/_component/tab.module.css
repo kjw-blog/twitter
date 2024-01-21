@@ -18,6 +18,7 @@
   border-color: rgb(239, 243, 244);
   border-bottom-width: 1px;
   border-bottom-style: solid;
+  z-index: 1;
 }
 
 .homeText {

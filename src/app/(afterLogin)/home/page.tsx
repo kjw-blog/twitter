@@ -10,8 +10,8 @@ export default function Home() {
     <main className={style.main}>
       <TabProvider>
         <Tab />
-        {/* <PostForm />
-        <Post />
+        <PostForm />
+        {/* <Post />
         <Post />
         <Post />
         <Post />
