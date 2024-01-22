@@ -2,7 +2,7 @@ import style from './explore.module.css';
 import SearchForm from '@/app/(afterLogin)/_component/SearchForm';
 import Trend from '../_component/Trend';
 
-export default function Home() {
+export default function Explore() {
   return (
     <main className={style.main}>
       <div className={style.formZone}>
