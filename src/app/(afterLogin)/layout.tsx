@@ -8,12 +8,14 @@ import NavMenu from '@/app/(afterLogin)/_component/NavMenu';
 import LogoutButton from '@/app/(afterLogin)/_component/LogoutButton';
 import TrendSection from '@/app/(afterLogin)/_component/TrendSection';
 import FollowRecommend from '@/app/(afterLogin)/_component/FollowRecommend';
+import { ReactNode } from 'react';
 
-export default function AfterLoginLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+type Props = {
+  children: ReactNode;
+  modal: ReactNode;
+};
+
+export default function AfterLoginLayout({ children, modal }: Props) {
   return (
     <div className={style.container}>
       <header className={style.leftSectionWrapper}>
@@ -60,6 +62,7 @@ export default function AfterLoginLayout({
           </section>
         </div>
       </div>
+      {modal}
     </div>
   );
 }
