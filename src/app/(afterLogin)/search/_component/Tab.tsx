@@ -15,7 +15,8 @@ export default function Tab() {
   };
   const onClickNew = () => {
     setCurrent('new');
-    router.replace(`/search?${searchParams.toString()}&f=live`);
+    if (!searchParams.get('f'))
+      router.replace(`/search?${searchParams.toString()}&f=live`);
   };
 
   return (
