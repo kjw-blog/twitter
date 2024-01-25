@@ -3,7 +3,12 @@
 import style from '../messages.module.css';
 import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/ko';
 import { useRouter } from 'next/navigation';
+
+dayjs.extend(relativeTime);
+dayjs.locale('ko');
 
 export default function Room() {
   const router = useRouter();
