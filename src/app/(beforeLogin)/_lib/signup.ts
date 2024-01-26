@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 
-export default async (prevState: any, formData: FormData) => {
+const onSubmit = async (prevState: any, formData: FormData) => {
   // use server를 입력함으로써 서버 코드를 적을 수 있고, 서버 코드는 브라우저에 노출이 되지 않는다.
 
   if (!formData.get('id') || !(formData.get('id') as string)?.trim()) {
@@ -48,3 +48,5 @@ export default async (prevState: any, formData: FormData) => {
     redirect('/home');
   }
 };
+
+export default onSubmit;
