@@ -16,16 +16,6 @@ export const {
     signIn: '/i/flow/login',
     newUser: '/i/flow/signup',
   },
-  callbacks: {
-    async authorized({ request, auth }) {
-      // middleware의 matcher에 route에 접근했을 경우 session(auth)이 없으면 redirect함
-      if (!auth) {
-        return NextResponse.redirect('http://localhost:3000/i/flow/login');
-      }
-
-      return true;
-    },
-  },
   providers: [
     CredentialsProvider({
       // 로그인 할 때 수행함 credentials안에는 로그인 창에서 입력하는 아이디, 비밀번호가 들어있음
