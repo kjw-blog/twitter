@@ -19,11 +19,11 @@ export default function LogoutButton() {
   return (
     <button className={style.logoutButton} onClick={onLogout}>
       <div className={style.logoutUserImage}>
-        <img src={me.user?.image!} alt={me.user?.id} />
+        <img src={me.user?.image!} alt={me.user?.email as string} />
       </div>
       <div className={style.logoutUserName}>
         <div>{me.user?.name}</div>
-        <div>@{me.user?.id}sdfsdf</div>
+        <div>@{me.user?.email}</div>
       </div>
     </button>
   );

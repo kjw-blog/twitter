@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { NextResponse } from 'next/server';
 
 export const {
   // api route
@@ -14,6 +15,16 @@ export const {
   pages: {
     signIn: '/i/flow/login',
     newUser: '/i/flow/signup',
+  },
+  callbacks: {
+    async authorized({ request, auth }) {
+      // middleware의 matcher에 route에 접근했을 경우 session(auth)이 없으면 redirect함
+      if (!auth) {
+        return NextResponse.redirect('http://localhost:3000/i/flow/login');
+      }
+
+      return true;
+    },
   },
   providers: [
     CredentialsProvider({
@@ -39,7 +50,7 @@ export const {
 
         // 여기서 return 하는 값으로 앞으로 로그인한 유저 정보를 사용할 수 있음
         return {
-          id: user.id,
+          email: user.id,
           name: user.nickname,
           image: user.image,
           ...user,
