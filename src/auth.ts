@@ -38,7 +38,12 @@ export const {
         const user = await authResponse.json();
 
         // 여기서 return 하는 값으로 앞으로 로그인한 유저 정보를 사용할 수 있음
-        return user;
+        return {
+          id: user.id,
+          name: user.nickname,
+          image: user.image,
+          ...user,
+        };
       },
     }),
   ],
