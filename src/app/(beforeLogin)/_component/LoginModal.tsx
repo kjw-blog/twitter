@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import style from '@/app/(beforeLogin)/_component/login.module.css';
+import { useRouter } from 'next/navigation';
 
 export default function LoginModal() {
+  const router = useRouter();
+
   const [id, setId] = useState();
   const [password, setPassword] = useState();
   const [message, SetMessage] = useState();
@@ -14,7 +17,9 @@ export default function LoginModal() {
 
   const onChangePassword = () => {};
 
-  const onClickClose = () => {};
+  const onClickClose = () => {
+    router.back();
+  };
 
   return (
     <div className={style.modalBackground}>
