@@ -8,6 +8,15 @@ type Props = {
   children: ReactNode;
 };
 
+/**
+ * refetch와 invalidate의 차이
+ *
+ * refetch: 해당 키를 사용하는 데이터를 무조건 다시 가져옴
+ * invalidate:
+ *              해당 키를 사용하는 데이터가 inactive 상황에서는 데이터를 다시 가져오지 않고,
+ *              해당 화면에 보여지는 stale, fresh 상황에서 데이터를 다시 가져옴
+ */
+
 function RQProvider({ children }: Props) {
   const [client] = useState(
     new QueryClient({
