@@ -2,39 +2,23 @@ import style from './home.module.css';
 
 import Tab from '@/app/(afterLogin)/home/_component/Tab';
 import PostForm from '@/app/(afterLogin)/home/_component/PostForm';
-import Post from '@/app/(afterLogin)/_component/Post';
 import TabProvider from '@/app/(afterLogin)/home/_component/TabProvider';
 import {
   HydrationBoundary,
   QueryClient,
   dehydrate,
 } from '@tanstack/react-query';
-
-async function getPostRecommend() {
-  const res = await fetch('http://localhost:9090/api/postRecommends', {
-    next: {
-      // revalidateTag 라는 함수로 캐시를 초기화하기 위한 태그
-      tags: ['posts', 'recommends'],
-    },
-    // 캐싱을 방지하기 위해 no-store
-    cache: 'no-store',
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
-
-  return res.json();
-}
+import PostRecommends from './_component/PostRecommends';
+import { getPostRecommends } from './_lib/getPostRecommends';
 
 export default async function Home() {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['posts', 'recommends'],
-    queryFn: getPostRecommend,
+    queryFn: getPostRecommends,
   });
 
-  // hydrate란 : 서버에서 온 데이터를 클라이언트에서 형식에 맞게 물려받는 것
+  // hydrate란? : 서버에서 온 데이터를 클라이언트에서 형식에 맞게 물려받는 것
   const dehydratedState = dehydrate(queryClient);
 
   return (
@@ -43,17 +27,7 @@ export default async function Home() {
         <TabProvider>
           <Tab />
           <PostForm />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
+          <PostRecommends />
         </TabProvider>
       </HydrationBoundary>
     </main>
