@@ -9,12 +9,15 @@ type Props = {
 };
 
 /**
- * refetch와 invalidate의 차이
+ * refetch, invalidate, reset의 차이
  *
- * refetch: 해당 키를 사용하는 데이터를 무조건 다시 가져옴
- * invalidate:
- *              해당 키를 사용하는 데이터가 inactive 상황에서는 데이터를 다시 가져오지 않고,
+ * refetch:     해당 키를 사용하는 데이터를 무조건 다시 가져옴
+ *
+ * invalidate:  해당 키를 사용하는 데이터가 inactive 상황에서는 데이터를 다시 가져오지 않고,
  *              해당 화면에 보여지는 stale, fresh 상황에서 데이터를 다시 가져옴
+ *
+ * reset:       해당 키를 사용하는 데이터의 초기 값 (initialData)가 있을 경우, 초기 값을 다시 가져오고,
+ *              만약 없다면 데이터를 다시 가져온다
  */
 
 function RQProvider({ children }: Props) {
