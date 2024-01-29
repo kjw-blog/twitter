@@ -1,9 +1,9 @@
-export async function getFollowRecommends() {
+export async function getTrends() {
   const res = await fetch('http://localhost:9090/api/followRecommends', {
     next: {
-      tags: ['posts', 'followings'],
+      tags: ['users', 'followRecommends'],
     },
-    cache: 'no-store',
+    cache: 'no-cache',
   });
 
   if (!res.ok) {
