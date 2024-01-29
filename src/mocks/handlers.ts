@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { HttpResponse, http } from 'msw';
+import { HttpResponse, StrictResponse, http } from 'msw';
 
 function generateDate() {
   const lastWeek = new Date(Date.now());
@@ -212,7 +212,7 @@ export const handlers = [
       },
     ]);
   }),
-  http.get('/api/users/:userId', ({ params }) => {
+  http.get('/api/users/:userId', ({ params }): StrictResponse<any> => {
     const { userId } = params;
 
     const found = User.find((v) => v.id === userId);
@@ -282,13 +282,16 @@ export const handlers = [
       },
     ]);
   }),
-  http.get('/api/users/:userId/posts/:postId', ({ params }) => {
-    const { userId, postId } = params;
+  http.get('/api/posts/:postId', ({ params }): StrictResponse<any> => {
+    const { postId } = params;
+    if (parseInt(postId as string) > 10) {
+      return HttpResponse.json({ message: 'no_such_post' }, { status: 404 });
+    }
 
     return HttpResponse.json({
       postId: 6,
       User: User[0],
-      content: `${1} ${userId}의 게시글 ${postId}의 내용`,
+      content: `${1} 게시글 아이디 ${postId}의 내용`,
       Images: [{ imageId: 1, link: faker.image.urlLoremFlickr() }],
       createdAt: generateDate(),
     });
