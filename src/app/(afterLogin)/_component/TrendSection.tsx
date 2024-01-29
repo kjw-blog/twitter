@@ -4,9 +4,20 @@ import Trend from '@/app/(afterLogin)/_component/Trend';
 import style from './trendSection.module.css';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useQuery } from '@tanstack/react-query';
+import { getTrends } from '../_lib/getTrends';
+import { Hashtag } from '@/model/Hashtag';
 
 export default function TrendSection() {
-  const { data } = useSession();
+  const { data: session } = useSession();
+
+  const { data } = useQuery<Hashtag[]>({
+    queryKey: ['trends'],
+    queryFn: getTrends,
+    staleTime: 60 * 1000,
+    gcTime: 300 * 1000,
+    enabled: !!session?.user,
+  });
 
   const pathname = usePathname();
 
@@ -14,20 +25,14 @@ export default function TrendSection() {
     return null;
   }
 
-  if (data?.user) {
+  if (session?.user) {
     return (
       <div className={style.trendBg}>
         <div className={style.trend}>
           <h3>나를 위한 트렌드</h3>
-          <Trend />
-          <Trend />
-          <Trend />
-          <Trend />
-          <Trend />
-          <Trend />
-          <Trend />
-          <Trend />
-          <Trend />
+          {data?.map((trend) => (
+            <Trend key={trend.tagId} trend={trend} />
+          ))}
         </div>
       </div>
     );
