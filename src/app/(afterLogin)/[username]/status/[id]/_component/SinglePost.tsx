@@ -7,16 +7,17 @@ import Post from '@/app/(afterLogin)/_component/Post';
 
 type Props = {
   id: string;
+  noImage?: boolean;
 };
 
-export default function SinglePost({ id }: Props) {
+export default function SinglePost({ id, noImage }: Props) {
   const { data: post, error } = useQuery<
     IPost,
     Object,
     IPost,
     [_1: string, _2: string]
   >({
-    queryKey: ['post', id],
+    queryKey: ['posts', id],
     queryFn: getSinglePost,
     staleTime: 60 * 1000,
     gcTime: 300 * 1000,
@@ -43,5 +44,5 @@ export default function SinglePost({ id }: Props) {
     return null;
   }
 
-  return <Post post={post} />;
+  return <Post post={post} noImage={noImage} />;
 }

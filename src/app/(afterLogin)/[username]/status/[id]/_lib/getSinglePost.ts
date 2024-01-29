@@ -9,9 +9,8 @@ export const getSinglePost: QueryFunction<
 
   const res = await fetch(`http://localhost:9090/api/posts/${id}`, {
     next: {
-      tags: ['post', id],
+      tags: ['posts', id],
     },
-    cache: 'no-cache',
   });
 
   if (!res.ok) {

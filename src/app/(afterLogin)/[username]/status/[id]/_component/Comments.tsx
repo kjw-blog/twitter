@@ -1,31 +1,32 @@
 'use client';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getUserPosts } from '../_lib/getUserPosts';
+import { getComments } from '../_lib/getComments';
 import { Post as IPost } from '@/model/Post';
 import Post from '@/app/(afterLogin)/_component/Post';
 
 type Props = {
-  username: string;
+  id: string;
 };
 
-export default function UserPosts({ username }: Props) {
+export default function Comments({ id }: Props) {
+  const queryClient = useQueryClient();
+  const post = queryClient.getQueryData(['posts', id]);
+
   const { data } = useQuery<
     IPost[],
     Object,
     IPost[],
     [_1: string, _2: string, _3: string]
   >({
-    queryKey: ['posts', 'users', username],
-    queryFn: getUserPosts,
+    queryKey: ['posts', id, 'comments'],
+    queryFn: getComments,
     staleTime: 60 * 1000,
     gcTime: 300 * 1000,
+    enabled: !!post,
   });
 
-  const queryClient = useQueryClient();
-  const user = queryClient.getQueryData(['users', username]);
-
-  if (user) {
+  if (post) {
     return data?.map((post) => <Post key={post.postId} post={post} />);
   }
 

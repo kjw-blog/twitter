@@ -37,7 +37,6 @@ const onSubmit = async (prevState: any, formData: FormData) => {
       return { message: 'user_exists' };
     }
 
-    console.log(await response.json());
     shouldRedirect = true;
     await signIn('credentials', {
       username: formData.get('id'),
