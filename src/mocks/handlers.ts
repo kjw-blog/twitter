@@ -19,19 +19,11 @@ const User = [
 
 export const handlers = [
   http.post('/api/login', () => {
-    return HttpResponse.json(
-      {
-        userId: 1,
-        nickname: '제로초',
-        id: 'zerocho',
-        image: '/5Udwvqim.jpg',
+    return HttpResponse.json(User[1], {
+      headers: {
+        'Set-Cookie': 'connect.sid=msw-cookie;HttpOnly,Path=/',
       },
-      {
-        headers: {
-          'Set-Cookie': 'connect.sid=msw-cookie;HttpOnly,Path=/',
-        },
-      }
-    );
+    });
   }),
   http.post('/api/logout', () => {
     return new HttpResponse(null, {
