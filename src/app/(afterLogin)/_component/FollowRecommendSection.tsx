@@ -2,8 +2,8 @@
 
 import { User } from '@/model/User';
 import { useQuery } from '@tanstack/react-query';
-import { getFollowRecommends } from '../home/_lib/getFollowingPosts';
 import FollowRecommend from './FollowRecommend';
+import { getFollowRecommends } from '../_lib/getFollowRecommends';
 
 export default function FollowRecommendSection() {
   const { data } = useQuery<User[]>({

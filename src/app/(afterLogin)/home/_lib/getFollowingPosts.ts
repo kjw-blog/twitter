@@ -1,5 +1,5 @@
-export async function getFollowRecommends() {
-  const res = await fetch('http://localhost:9090/api/followRecommends', {
+export async function getFollowPosts() {
+  const res = await fetch('http://localhost:9090/api/followingPosts', {
     next: {
       tags: ['posts', 'followings'],
     },

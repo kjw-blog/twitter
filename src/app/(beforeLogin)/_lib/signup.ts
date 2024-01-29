@@ -4,7 +4,7 @@ import { signIn } from '@/auth';
 import { redirect } from 'next/navigation';
 
 const onSubmit = async (prevState: any, formData: FormData) => {
-  // use server를 입력함으로써 서버 코드를 적을 수 있고, 서버 코드는 브라우저에 노출이 되지 않는다.
+  // use server를 입력함으로써 서버 코드를 적을 수 있고, 서버 코드는 브 라우저에 노출이 되지 않는다.
 
   if (!formData.get('id') || !(formData.get('id') as string)?.trim()) {
     return { message: 'no_id' };
