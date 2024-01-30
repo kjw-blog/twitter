@@ -4,10 +4,11 @@ import { InfiniteData, useInfiniteQuery } from '@tanstack/react-query';
 import { getPostRecommends } from '../_lib/getPostRecommends';
 import Post from '@/app/(afterLogin)/_component/Post';
 import { Post as IPost } from '@/model/Post';
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 export default function PostRecommends() {
-  const { data } = useInfiniteQuery<
+  const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery<
     IPost[],
     Object,
     InfiniteData<IPost[]>,
@@ -23,11 +24,27 @@ export default function PostRecommends() {
     gcTime: 300 * 1000, // 기본값 300000ms(5분) inactive 상태의 사용하지 않는 데이터를 메모리에서 정리를 해주는 시간
   });
 
-  return data?.pages.map((page, i) => (
-    <Fragment key={i}>
-      {page.map((post) => (
-        <Post key={post.postId} post={post} />
+  const { ref, inView } = useInView({
+    threshold: 0, // 요소가 보이고나서 몇 px후에 이벤트 호출하는지
+    // delay: 0, // 요소가 보이고나서 몇 초후에 이벤트 호출하는지
+  });
+
+  useEffect(() => {
+    if (inView) {
+      !isFetching && hasNextPage && fetchNextPage();
+    }
+  }, [inView, fetchNextPage, hasNextPage, isFetching]);
+
+  return (
+    <>
+      {data?.pages.map((page, i) => (
+        <Fragment key={i}>
+          {page.map((post) => (
+            <Post key={post.postId} post={post} />
+          ))}
+        </Fragment>
       ))}
-    </Fragment>
-  ));
+      <div ref={ref} style={{ height: 50 }} />
+    </>
+  );
 }
