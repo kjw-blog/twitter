@@ -98,8 +98,10 @@ export const handlers = [
     ]);
   }),
 
-  http.get('/api/followingPosts', () => {
-    let cursor = 0;
+  http.get('/api/followingPosts?cursor=0', ({ request }) => {
+    const url = new URL(request.url);
+    const cursor = parseInt(url.searchParams.get('cursor') as string) || 0;
+
     return HttpResponse.json([
       {
         postId: cursor + 1,

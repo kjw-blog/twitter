@@ -26,7 +26,7 @@ export default function PostRecommends() {
 
   const { ref, inView } = useInView({
     threshold: 0, // 요소가 보이고나서 몇 px후에 이벤트 호출하는지
-    // delay: 0, // 요소가 보이고나서 몇 초후에 이벤트 호출하는지
+    delay: 0, // 요소가 보이고나서 몇 초후에 이벤트 호출하는지
   });
 
   useEffect(() => {
@@ -44,7 +44,9 @@ export default function PostRecommends() {
           ))}
         </Fragment>
       ))}
-      <div ref={ref} style={{ height: 50 }} />
+      {data && data?.pages.length > 0 && (
+        <div ref={ref} style={{ height: 50 }} />
+      )}
     </>
   );
 }
