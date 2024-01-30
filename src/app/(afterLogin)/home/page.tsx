@@ -3,34 +3,23 @@ import style from './home.module.css';
 import Tab from '@/app/(afterLogin)/home/_component/Tab';
 import PostForm from '@/app/(afterLogin)/home/_component/PostForm';
 import TabProvider from '@/app/(afterLogin)/home/_component/TabProvider';
-import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from '@tanstack/react-query';
-import { getPostRecommends } from './_lib/getPostRecommends';
-import TabDecider from './_component/TabDecider';
+
+import TabDeciderSuspense from './_component/TabDeciderSuspense';
+import { Suspense } from 'react';
+import Loading from './loading';
 
 export default async function Home() {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchInfiniteQuery({
-    queryKey: ['posts', 'recommends'],
-    queryFn: getPostRecommends,
-    initialPageParam: 0, // cursor의 기본값
-  });
-
-  // hydrate란? : 서버에서 온 데이터를 클라이언트에서 형식에 맞게 물려받는 것
-  const dehydratedState = dehydrate(queryClient);
+  // throw '으하하하하'; 강제로 오류 발생시키면 error.tsx가 보여짐
 
   return (
     <main className={style.main}>
-      <HydrationBoundary state={dehydratedState}>
-        <TabProvider>
-          <Tab />
-          <PostForm />
-          <TabDecider />
-        </TabProvider>
-      </HydrationBoundary>
+      <TabProvider>
+        <Tab />
+        <PostForm />
+        <Suspense fallback={<Loading />}>
+          <TabDeciderSuspense />
+        </Suspense>
+      </TabProvider>
     </main>
   );
 }

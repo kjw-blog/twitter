@@ -1,6 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { HttpResponse, StrictResponse, http } from 'msw';
 
+const delay = (ms: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
 function generateDate() {
   const lastWeek = new Date(Date.now());
   lastWeek.setDate(lastWeek.getDate() - 7);
@@ -43,7 +48,9 @@ export const handlers = [
     });
   }),
 
-  http.get('/api/postRecommends?cursor=0', ({ request }) => {
+  http.get('/api/postRecommends?cursor=0', async ({ request }) => {
+    await delay(3000);
+
     const url = new URL(request.url);
     const cursor = parseInt(url.searchParams.get('cursor') as string) || 0;
 
@@ -98,7 +105,9 @@ export const handlers = [
     ]);
   }),
 
-  http.get('/api/followingPosts?cursor=0', ({ request }) => {
+  http.get('/api/followingPosts?cursor=0', async ({ request }) => {
+    await delay(3000);
+
     const url = new URL(request.url);
     const cursor = parseInt(url.searchParams.get('cursor') as string) || 0;
 
