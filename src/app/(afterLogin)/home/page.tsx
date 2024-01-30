@@ -13,9 +13,10 @@ import TabDecider from './_component/TabDecider';
 
 export default async function Home() {
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
+  await queryClient.prefetchInfiniteQuery({
     queryKey: ['posts', 'recommends'],
     queryFn: getPostRecommends,
+    initialPageParam: 0, // cursor의 기본값
   });
 
   // hydrate란? : 서버에서 온 데이터를 클라이언트에서 형식에 맞게 물려받는 것
