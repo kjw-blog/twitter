@@ -21,13 +21,17 @@ export default function LoginModal() {
     SetMessage('');
 
     try {
-      await signIn('credentials', {
+      const response = await signIn('credentials', {
         username: id,
         password,
         redirect: false,
       });
 
-      router.replace('/home');
+      if (response?.error) {
+        SetMessage('아이디와 비밀번호가 일치하지 않습니다.');
+      } else {
+        router.replace('/home');
+      }
     } catch (err) {
       console.error(err);
       SetMessage('아이디와 비밀번호가 일치하지 않습니다.');
