@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { NextResponse } from 'next/server';
+import cookie from 'cookie';
+import { cookies } from 'next/headers';
 
 export const {
   // api route
@@ -30,6 +31,16 @@ export const {
             password: credentials.password,
           }),
         });
+
+        let setCookie = authResponse.headers.get('Set-Cookie');
+        console.log('set-cookie', setCookie);
+
+        // 브라우저에 쿠키를 심어주는 것
+        if (setCookie) {
+          const parsed = cookie.parse(setCookie);
+
+          cookies().set('connect.sid', parsed['connect.sid'], parsed);
+        }
 
         if (!authResponse.ok) {
           return null;
