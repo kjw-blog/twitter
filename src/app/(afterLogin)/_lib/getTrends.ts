@@ -6,7 +6,7 @@ export async function getTrends() {
         tags: ['trends'],
       },
       credentials: 'include',
-      cache: 'no-cache',
+      cache: 'no-store',
     }
   );
 
