@@ -7,15 +7,16 @@ import TabProvider from '@/app/(afterLogin)/home/_component/TabProvider';
 import TabDeciderSuspense from './_component/TabDeciderSuspense';
 import { Suspense } from 'react';
 import Loading from './loading';
+import { auth } from '@/auth';
 
 export default async function Home() {
-  // throw '으하하하하'; 강제로 오류 발생시키면 error.tsx가 보여짐
+  const session = await auth();
 
   return (
     <main className={style.main}>
       <TabProvider>
         <Tab />
-        <PostForm />
+        <PostForm me={session} />
         <Suspense fallback={<Loading />}>
           <TabDeciderSuspense />
         </Suspense>

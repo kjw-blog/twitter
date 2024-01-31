@@ -16,9 +16,9 @@ type Props = {
   modal: ReactNode;
 };
 
-// export default function AfterLoginLayout({ children, modal }: Props) {
 export default async function AfterLoginLayout({ children, modal }: Props) {
   const session = await auth();
+
   return (
     <RQProvider>
       <div className={style.container}>
@@ -50,7 +50,7 @@ export default async function AfterLoginLayout({ children, modal }: Props) {
                       </svg>
                     </Link>
                   </nav>
-                  <LogoutButton />
+                  <LogoutButton me={session} />
                 </>
               )}
             </div>

@@ -9,8 +9,11 @@ const onSubmit = async (prevState: any, formData: FormData) => {
   if (!formData.get('id') || !(formData.get('id') as string)?.trim()) {
     return { message: 'no_id' };
   }
-  if (!formData.get('name') || !(formData.get('name') as string)?.trim()) {
-    return { message: 'no_name' };
+  if (
+    !formData.get('nickname') ||
+    !(formData.get('nickname') as string)?.trim()
+  ) {
+    return { message: 'no_nickname' };
   }
   if (
     !formData.get('password') ||
@@ -23,13 +26,14 @@ const onSubmit = async (prevState: any, formData: FormData) => {
   }
 
   let shouldRedirect = false;
+
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/users`,
       {
         method: 'post',
         body: formData,
-        credentials: 'include',
+        credentials: 'include', // session cookie가 브라우저에 등록되게 함
       }
     );
 

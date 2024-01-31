@@ -4,14 +4,11 @@ type Props = {
 
 export async function getPostRecommends({ pageParam }: Props) {
   const res = await fetch(
-    `http://localhost:9090/api/postRecommends?cursor=${pageParam}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/recommends?cursor=${pageParam}`,
     {
       next: {
-        // revalidateTag 라는 함수로 캐시를 초기화하기 위한 태그 (서버 쪽 캐싱임)
         tags: ['posts', 'recommends'],
       },
-      // 캐싱을 방지하기 위해 no-store
-      cache: 'no-store',
     }
   );
 

@@ -56,7 +56,7 @@ export default function SignupModal() {
               </label>
               <input
                 id="name"
-                name="name"
+                name="nickname"
                 className={style.input}
                 type="text"
                 placeholder=""
