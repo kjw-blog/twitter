@@ -1,11 +1,7 @@
 'use client';
 
 import { Post as IPost } from '@/model/Post';
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  useQuery,
-} from '@tanstack/react-query';
+import { InfiniteData, useInfiniteQuery } from '@tanstack/react-query';
 import Post from '@/app/(afterLogin)/_component/Post';
 import { getSearchResult } from '../_lib/getSearchResult';
 import { Fragment, useEffect } from 'react';
@@ -24,9 +20,7 @@ export default function SearchResult({ searchParams }: Props) {
     number
   >({
     queryKey: ['posts', 'search', searchParams],
-    queryFn: ({ pageParam }) => {
-      return getSearchResult({ pageParam, searchParams });
-    },
+    queryFn: getSearchResult,
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.at(-1)?.postId,
     staleTime: 60 * 1000,

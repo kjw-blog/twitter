@@ -1,16 +1,19 @@
-type Props = {
-  pageParam: number;
-  searchParams: { q: string; f?: string; pf?: string };
-};
+import { Post } from '@/model/Post';
+import { QueryFunction } from '@tanstack/react-query';
 
-export const getSearchResult = async ({ pageParam, searchParams }: Props) => {
+export const getSearchResult: QueryFunction<
+  Post[],
+  [_1: string, _2: string, _3: { q: string; f?: string; pf?: string }],
+  number
+> = async ({ pageParam, queryKey }) => {
+  const [_1, _2, searchParams] = queryKey;
+
   const urlSearchParams = new URLSearchParams(searchParams);
 
   const res = await fetch(
     `http://localhost:9090/api/posts?${urlSearchParams.toString()}&cursor=${pageParam}`,
     {
       next: {
-        // next 캐싱은 객체가 들어갈 수 없다
         tags: ['posts', 'search', searchParams.q],
       },
       credentials: 'include',
