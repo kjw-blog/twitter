@@ -49,18 +49,20 @@ export default function UserInfo({ username }: Props) {
       if (value) {
         const index = value.findIndex((v) => v.id === userId);
 
-        const shallow = [...value];
+        if (index > -1) {
+          const shallow = [...value];
 
-        shallow[index] = {
-          ...shallow[index],
-          Followers: [{ userId: session?.user?.email as string }],
-          _count: {
-            ...shallow[index]._count,
-            Followers: shallow[index]._count?.Followers + 1,
-          },
-        };
+          shallow[index] = {
+            ...shallow[index],
+            Followers: [{ userId: session?.user?.email as string }],
+            _count: {
+              ...shallow[index]._count,
+              Followers: shallow[index]._count?.Followers + 1,
+            },
+          };
 
-        queryClient.setQueryData(['users', 'followRecommends'], shallow);
+          queryClient.setQueryData(['users', 'followRecommends'], shallow);
+        }
       }
 
       const value2: User | undefined = queryClient.getQueryData([
@@ -90,20 +92,22 @@ export default function UserInfo({ username }: Props) {
       if (value) {
         const index = value.findIndex((v) => v.id === userId);
 
-        const shallow = [...value];
+        if (index > -1) {
+          const shallow = [...value];
 
-        shallow[index] = {
-          ...shallow[index],
-          Followers: shallow[index].Followers.filter(
-            (v) => v.userId !== session?.user?.email
-          ),
-          _count: {
-            ...shallow[index]._count,
-            Followers: shallow[index]._count?.Followers - 1,
-          },
-        };
+          shallow[index] = {
+            ...shallow[index],
+            Followers: shallow[index].Followers.filter(
+              (v) => v.userId !== session?.user?.email
+            ),
+            _count: {
+              ...shallow[index]._count,
+              Followers: shallow[index]._count?.Followers - 1,
+            },
+          };
 
-        queryClient.setQueryData(['users', 'followRecommends'], shallow);
+          queryClient.setQueryData(['users', 'followRecommends'], shallow);
+        }
       }
 
       const value2: User | undefined = queryClient.getQueryData([
@@ -145,21 +149,22 @@ export default function UserInfo({ username }: Props) {
 
       if (value) {
         const index = value.findIndex((v) => v.id === userId);
+        if (index > -1) {
+          const shallow = [...value];
 
-        const shallow = [...value];
+          shallow[index] = {
+            ...shallow[index],
+            Followers: shallow[index].Followers.filter(
+              (v) => v.userId !== session?.user?.email
+            ),
+            _count: {
+              ...shallow[index]._count,
+              Followers: shallow[index]._count?.Followers - 1,
+            },
+          };
 
-        shallow[index] = {
-          ...shallow[index],
-          Followers: shallow[index].Followers.filter(
-            (v) => v.userId !== session?.user?.email
-          ),
-          _count: {
-            ...shallow[index]._count,
-            Followers: shallow[index]._count?.Followers - 1,
-          },
-        };
-
-        queryClient.setQueryData(['users', 'followRecommends'], shallow);
+          queryClient.setQueryData(['users', 'followRecommends'], shallow);
+        }
       }
 
       const value2: User | undefined = queryClient.getQueryData([
@@ -191,18 +196,20 @@ export default function UserInfo({ username }: Props) {
       if (value) {
         const index = value.findIndex((v) => v.id === userId);
 
-        const shallow = [...value];
+        if (index > -1) {
+          const shallow = [...value];
 
-        shallow[index] = {
-          ...shallow[index],
-          Followers: [{ userId: session?.user?.email as string }],
-          _count: {
-            ...shallow[index]._count,
-            Followers: shallow[index]._count?.Followers + 1,
-          },
-        };
+          shallow[index] = {
+            ...shallow[index],
+            Followers: [{ userId: session?.user?.email as string }],
+            _count: {
+              ...shallow[index]._count,
+              Followers: shallow[index]._count?.Followers + 1,
+            },
+          };
 
-        queryClient.setQueryData(['users', 'followRecommends'], shallow);
+          queryClient.setQueryData(['users', 'followRecommends'], shallow);
+        }
       }
 
       const value2: User | undefined = queryClient.getQueryData([
