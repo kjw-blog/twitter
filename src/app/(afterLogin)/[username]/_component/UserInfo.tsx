@@ -284,21 +284,27 @@ export default function UserInfo({ username }: Props) {
         <h3 className={style.headerTitle}>{user.nickname}</h3>
       </div>
       <div className={style.userZone}>
-        <div className={style.userImage}>
-          <img src={user.image} alt={user.id} />
+        <div className={style.userRow}>
+          <div className={style.userImage}>
+            <img src={user.image} alt={user.id} />
+          </div>
+          <div className={style.userName}>
+            <div>{user.nickname}</div>
+            <div>@{user.id}</div>
+          </div>
+          {user.id !== session?.user?.email && (
+            <button
+              onClick={onFollow}
+              className={cx(style.followButton, followed && style.followed)}
+            >
+              {followed ? '팔로잉' : '팔로우'}
+            </button>
+          )}
         </div>
-        <div className={style.userName}>
-          <div>{user.nickname}</div>
-          <div>@{user.id}</div>
+        <div className={style.userFollower}>
+          <div>{user._count.Followers} 팔로워</div>&nbsp;
+          <div>{user._count.Followings} 팔로우 중</div>
         </div>
-        {user.id !== session?.user?.email && (
-          <button
-            onClick={onFollow}
-            className={cx(style.followButton, followed && style.followed)}
-          >
-            {followed ? '팔로잉' : '팔로우'}
-          </button>
-        )}
       </div>
     </>
   );
