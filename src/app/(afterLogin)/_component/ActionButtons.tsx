@@ -3,7 +3,11 @@
 import { MouseEventHandler } from 'react';
 import style from './post.module.css';
 import cx from 'classnames';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  InfiniteData,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Post } from '@/model/Post';
 import { useSession } from 'next-auth/react';
 
@@ -16,11 +20,11 @@ export default function ActionButtons({ white, post }: Props) {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
 
-  const commented = post.Comments.find(
+  const commented = post.Comments?.find(
     (v) => v.userId === session?.user?.email
   );
-  const reposted = post.Reposts.find((v) => v.userId === session?.user?.email);
-  const liked = post.Hearts.find((v) => v.userId === session?.user?.email);
+  const reposted = post.Reposts?.find((v) => v.userId === session?.user?.email);
+  const liked = post.Hearts?.find((v) => v.userId === session?.user?.email);
 
   const { postId } = post;
 
@@ -41,21 +45,35 @@ export default function ActionButtons({ white, post }: Props) {
       // 어떤 쿼리키에서 하트를 눌렀는지 모르기때문에 직접 조회해서 업데이트해줘야함
       queryKeys.forEach((queryKey) => {
         if (queryKey[0] === 'posts') {
-          const value: Post | Post[] | undefined =
+          const value: Post | InfiniteData<Post[]> | undefined =
             queryClient.getQueryData(queryKey);
 
-          if (Array.isArray(value)) {
-            const index = value.findIndex((v) => v.postId === postId);
-            if (index > -1) {
-              const shallow = [...value];
-              shallow[index] = {
-                ...shallow[index],
+          if (value && 'pages' in value) {
+            const obj = value.pages.flat().find((v) => v.postId === postId);
+
+            if (obj) {
+              const pageIndex = value.pages.findIndex((page) =>
+                page.includes(obj)
+              );
+
+              const index = value.pages[pageIndex].findIndex(
+                (v) => v.postId === postId
+              );
+
+              const shallow = { ...value };
+
+              value.pages = { ...value.pages };
+              value.pages[pageIndex] = [...value.pages[pageIndex]];
+
+              shallow.pages[pageIndex][index] = {
+                ...shallow.pages[pageIndex][index],
                 Hearts: [{ userId: session?.user?.email as string }],
                 _count: {
-                  ...shallow[index]._count,
-                  Hearts: shallow[index]._count.Hearts + 1,
+                  ...shallow.pages[pageIndex][index]._count,
+                  Hearts: shallow.pages[pageIndex][index]._count.Hearts + 1,
                 },
               };
+
               queryClient.setQueryData(queryKey, shallow);
             }
           } else if (value) {
@@ -76,42 +94,43 @@ export default function ActionButtons({ white, post }: Props) {
         }
       });
     },
-    onError() {},
-    onSettled() {},
-  });
-  const unheart = useMutation({
-    mutationFn: () => {
-      return fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/${postId}/heart`,
-        {
-          method: 'delete',
-          credentials: 'include',
-        }
-      );
-    },
-    onMutate() {
+    onError() {
       const queryCache = queryClient.getQueryCache();
       const queryKeys = queryCache.getAll().map((cache) => cache.queryKey);
 
       queryKeys.forEach((queryKey) => {
         if (queryKey[0] === 'posts') {
-          const value: Post | Post[] | undefined =
+          const value: Post | InfiniteData<Post[]> | undefined =
             queryClient.getQueryData(queryKey);
 
-          if (Array.isArray(value)) {
-            const index = value.findIndex((v) => v.postId === postId);
-            if (index > -1) {
-              const shallow = [...value];
-              shallow[index] = {
-                ...shallow[index],
-                Hearts: shallow[index].Hearts.filter(
+          if (value && 'pages' in value) {
+            const obj = value.pages.flat().find((v) => v.postId === postId);
+
+            if (obj) {
+              const pageIndex = value.pages.findIndex((page) =>
+                page.includes(obj)
+              );
+
+              const index = value.pages[pageIndex].findIndex(
+                (v) => v.postId === postId
+              );
+
+              const shallow = { ...value };
+
+              value.pages = { ...value.pages };
+              value.pages[pageIndex] = [...value.pages[pageIndex]];
+
+              shallow.pages[pageIndex][index] = {
+                ...shallow.pages[pageIndex][index],
+                Hearts: shallow.pages[pageIndex][index].Hearts.filter(
                   (v) => v.userId !== session?.user?.email
                 ),
                 _count: {
-                  ...shallow[index]._count,
-                  Hearts: shallow[index]._count.Hearts - 1,
+                  ...shallow.pages[pageIndex][index]._count,
+                  Hearts: shallow.pages[pageIndex][index]._count.Hearts - 1,
                 },
               };
+
               queryClient.setQueryData(queryKey, shallow);
             }
           } else if (value) {
@@ -133,8 +152,141 @@ export default function ActionButtons({ white, post }: Props) {
         }
       });
     },
-    onError() {},
-    onSettled() {},
+    onSettled() {
+      // queryClient.invalidateQueries({
+      //   queryKey: ['posts'],
+      // });
+    },
+  });
+  const unheart = useMutation({
+    mutationFn: () => {
+      return fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/${postId}/heart`,
+        {
+          method: 'delete',
+          credentials: 'include',
+        }
+      );
+    },
+    onMutate() {
+      const queryCache = queryClient.getQueryCache();
+      const queryKeys = queryCache.getAll().map((cache) => cache.queryKey);
+
+      queryKeys.forEach((queryKey) => {
+        if (queryKey[0] === 'posts') {
+          const value: Post | InfiniteData<Post[]> | undefined =
+            queryClient.getQueryData(queryKey);
+
+          if (value && 'pages' in value) {
+            const obj = value.pages.flat().find((v) => v.postId === postId);
+
+            if (obj) {
+              const pageIndex = value.pages.findIndex((page) =>
+                page.includes(obj)
+              );
+
+              const index = value.pages[pageIndex].findIndex(
+                (v) => v.postId === postId
+              );
+
+              const shallow = { ...value };
+
+              value.pages = { ...value.pages };
+              value.pages[pageIndex] = [...value.pages[pageIndex]];
+
+              shallow.pages[pageIndex][index] = {
+                ...shallow.pages[pageIndex][index],
+                Hearts: shallow.pages[pageIndex][index].Hearts.filter(
+                  (v) => v.userId !== session?.user?.email
+                ),
+                _count: {
+                  ...shallow.pages[pageIndex][index]._count,
+                  Hearts: shallow.pages[pageIndex][index]._count.Hearts - 1,
+                },
+              };
+
+              queryClient.setQueryData(queryKey, shallow);
+            }
+          } else if (value) {
+            if (value.postId === postId) {
+              const shallow = {
+                ...value,
+                Hearts: value.Hearts.filter(
+                  (v) => v.userId !== session?.user?.email
+                ),
+                _count: {
+                  ...value._count,
+                  Hearts: value._count.Hearts - 1,
+                },
+              };
+
+              queryClient.setQueryData(queryKey, shallow);
+            }
+          }
+        }
+      });
+    },
+    onError() {
+      const queryCache = queryClient.getQueryCache();
+      const queryKeys = queryCache.getAll().map((cache) => cache.queryKey);
+
+      // 어떤 쿼리키에서 하트를 눌렀는지 모르기때문에 직접 조회해서 업데이트해줘야함
+      queryKeys.forEach((queryKey) => {
+        if (queryKey[0] === 'posts') {
+          const value: Post | InfiniteData<Post[]> | undefined =
+            queryClient.getQueryData(queryKey);
+
+          if (value && 'pages' in value) {
+            const obj = value.pages.flat().find((v) => v.postId === postId);
+
+            if (obj) {
+              const pageIndex = value.pages.findIndex((page) =>
+                page.includes(obj)
+              );
+
+              const index = value.pages[pageIndex].findIndex(
+                (v) => v.postId === postId
+              );
+
+              const shallow = { ...value };
+
+              value.pages = { ...value.pages };
+              value.pages[pageIndex] = [...value.pages[pageIndex]];
+
+              shallow.pages[pageIndex][index] = {
+                ...shallow.pages[pageIndex][index],
+                Hearts: [{ userId: session?.user?.email as string }],
+                _count: {
+                  ...shallow.pages[pageIndex][index]._count,
+                  Hearts: shallow.pages[pageIndex][index]._count.Hearts + 1,
+                },
+              };
+
+              queryClient.setQueryData(queryKey, shallow);
+            }
+          } else if (value) {
+            // 싱글 포스트인 경우
+            if (value.postId === postId) {
+              const shallow = {
+                ...value,
+                Hearts: [{ userId: session?.user?.email as string }],
+                _count: {
+                  ...value._count,
+                  Hearts: value._count.Hearts + 1,
+                },
+              };
+
+              queryClient.setQueryData(queryKey, shallow);
+            }
+          }
+        }
+      });
+    },
+    onSettled() {
+      // queryClient.invalidateQueries({
+      //   queryKey: ['posts'],
+      // });
+    },
   });
 
   const onClickComment = () => {};
