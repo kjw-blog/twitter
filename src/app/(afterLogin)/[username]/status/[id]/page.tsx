@@ -9,11 +9,29 @@ import {
   dehydrate,
 } from '@tanstack/react-query';
 import { getComments } from './_lib/getComments';
-import { getSinglePost } from './_lib/getSinglePost';
+import { Metadata } from 'next';
+import { User } from '@/model/User';
+import { getUserServer } from '../../_lib/getUserServer';
+import { Post } from '@/model/Post';
+import { getSinglePostServer } from './_lib/getSinglePostServer';
 
 type Props = {
-  params: { id: string };
+  params: { id: string; username: string };
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const user: User = await getUserServer({
+    queryKey: ['users', params.username],
+  });
+  const post: Post = await getSinglePostServer({
+    queryKey: ['posts', params.id],
+  });
+
+  return {
+    title: `Z에서 ${user.nickname} 님 : ${post.content}`,
+    generator: post.content,
+  };
+}
 
 export default async function Page({ params }: Props) {
   const { id } = params;
@@ -21,7 +39,7 @@ export default async function Page({ params }: Props) {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['posts', id],
-    queryFn: getSinglePost,
+    queryFn: getSinglePostServer,
   });
   await queryClient.prefetchQuery({
     queryKey: ['posts', id, 'comments'],
