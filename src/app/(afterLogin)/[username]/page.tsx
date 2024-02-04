@@ -8,7 +8,7 @@ import {
 import UserPosts from './_component/UserPosts';
 import { getUserPosts } from './_lib/getUserPosts';
 import UserInfo from './_component/UserInfo';
-import { getUser } from './_lib/getUser';
+import { getUserServer } from './_lib/getUserServer';
 
 type Props = {
   params: {
@@ -22,7 +22,7 @@ export default async function Profile({ params }: Props) {
   const queryClient = new QueryClient();
   queryClient.prefetchQuery({
     queryKey: ['users', username],
-    queryFn: getUser,
+    queryFn: getUserServer,
   });
   queryClient.prefetchQuery({
     queryKey: ['posts', 'users', username],

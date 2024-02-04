@@ -2,7 +2,7 @@ import { User } from '@/model/User';
 import { QueryFunction } from '@tanstack/react-query';
 import { cookies } from 'next/headers';
 
-export const getUser: QueryFunction<User, [_1: string, string]> = async ({
+export const getUserServer: QueryFunction<User, [_1: string, string]> = async ({
   queryKey,
 }) => {
   const [_1, username] = queryKey;
@@ -12,6 +12,7 @@ export const getUser: QueryFunction<User, [_1: string, string]> = async ({
       tags: ['users', username],
     },
     credentials: 'include',
+    headers: { Cookie: cookies().toString() },
     cache: 'no-cache',
   });
 
