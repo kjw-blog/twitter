@@ -9,6 +9,7 @@ import UserPosts from './_component/UserPosts';
 import { getUserPosts } from './_lib/getUserPosts';
 import UserInfo from './_component/UserInfo';
 import { getUserServer } from './_lib/getUserServer';
+import { auth } from '@/auth';
 
 type Props = {
   params: {
@@ -18,6 +19,7 @@ type Props = {
 
 export default async function Profile({ params }: Props) {
   const { username } = params;
+  const session = await auth();
 
   const queryClient = new QueryClient();
   queryClient.prefetchQuery({
@@ -33,7 +35,7 @@ export default async function Profile({ params }: Props) {
   return (
     <main className={style.main}>
       <HydrationBoundary state={dehydratedState}>
-        <UserInfo username={username} />
+        <UserInfo username={username} session={session} />
         <div>
           <UserPosts username={username} />
         </div>
