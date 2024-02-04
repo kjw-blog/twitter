@@ -10,6 +10,7 @@ export const getUser: QueryFunction<User, [_1: string, string]> = async ({
     next: {
       tags: ['users', username],
     },
+    credentials: 'include',
     cache: 'no-cache',
   });
 
