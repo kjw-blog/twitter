@@ -40,6 +40,7 @@ export default async function AfterLoginLayout({ children, modal }: Props) {
                       <span>게시하기</span>
                       <svg
                         viewBox="0 0 24 24"
+                        width={24}
                         aria-hidden="true"
                         className="r-4qtqp9 r-yyyyoo r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1472mwg r-lrsllp"
                         style={{ color: 'rgb(255, 255, 255)' }}
