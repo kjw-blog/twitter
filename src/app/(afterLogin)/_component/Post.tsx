@@ -4,8 +4,8 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/ko';
 import ActionButtons from '@/app/(afterLogin)/_component/ActionButtons';
-import PostArticle from './PostArticle';
-import PostImages from './PostImages';
+import PostArticle from '@/app/(afterLogin)/_component/PostArticle';
+import PostImages from '@/app/(afterLogin)/_component/PostImages';
 import { Post } from '@/model/Post';
 import { MouseEventHandler } from 'react';
 
@@ -16,9 +16,8 @@ type Props = {
   noImage?: boolean;
   post: Post;
 };
-
 export default function Post({ noImage, post }: Props) {
-  let target: Post = post;
+  let target = post;
   if (post.Original) {
     target = post.Original;
   }
@@ -69,15 +68,14 @@ export default function Post({ noImage, post }: Props) {
           </div>
           {target.Parent && (
             <div>
-              @
               <Link
-                onClick={stopPropagation}
                 href={`/${target.Parent.User.id}`}
-                style={{ color: 'rgb(29,155,240)' }}
+                style={{ color: 'rgb(29, 155, 240)' }}
+                onClick={stopPropagation}
               >
-                {target.Parent.User.id}
-              </Link>
-              에게 보내는 답글
+                @{target.Parent.User.id}
+              </Link>{' '}
+              님에게 보내는 답글
             </div>
           )}
           <div>{target.content}</div>
@@ -86,7 +84,7 @@ export default function Post({ noImage, post }: Props) {
               <PostImages post={target} />
             </div>
           )}
-          <ActionButtons post={post} />
+          <ActionButtons post={target} />
         </div>
       </div>
     </PostArticle>
