@@ -18,6 +18,7 @@ import {
 } from '@tanstack/react-query';
 import { useModalStore } from '@/store/modal';
 import { Post } from '@/model/Post';
+import Link from 'next/link';
 
 export default function TweetModal() {
   const { data: me } = useSession();
@@ -191,6 +192,7 @@ export default function TweetModal() {
     },
     onSettled() {
       router.back();
+      modalStore.reset();
     },
   });
 
@@ -240,6 +242,11 @@ export default function TweetModal() {
     }
   };
 
+  const onClickClose = () => {
+    router.back();
+    modalStore.reset();
+  };
+
   return (
     <div className={style.modalBackground}>
       <div className={style.modal}>
@@ -256,6 +263,27 @@ export default function TweetModal() {
           </svg>
         </button>
         <form className={style.modalForm} onSubmit={onSubmit}>
+          {modalStore.mode === 'comment' && parent && (
+            <div className={style.modalOriginal}>
+              <div className={style.postUserSection}>
+                <div className={style.postUserImage}>
+                  <img src={parent.User.image} alt={parent.User.id} />
+                </div>
+              </div>
+              <div>
+                {parent.content}
+                <div>
+                  <Link
+                    href={`/${parent.User.id}`}
+                    style={{ color: 'rgb(29,155,240)' }}
+                  >
+                    @{parent.User.id}
+                  </Link>
+                  &nbsp;님에게 보내는 답글
+                </div>
+              </div>
+            </div>
+          )}
           <div className={style.modalBody}>
             <div className={style.postUserSection}>
               <div className={style.postUserImage}>
@@ -266,7 +294,11 @@ export default function TweetModal() {
               <ReactTextareaAutosize
                 style={{ resize: 'none' }}
                 className={style.input}
-                placeholder="무슨 일이 일어나고 있나요?"
+                placeholder={
+                  modalStore.mode === 'comment'
+                    ? '답글 게시하기'
+                    : '무슨 일이 일어나고 있나요?'
+                }
                 value={content}
                 onChange={onChange}
               />
