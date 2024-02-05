@@ -9,7 +9,7 @@ interface ModalState {
   reset(): void;
 }
 
-export const useMotalStore = create<ModalState>((set) => ({
+export const useModalStore = create<ModalState>((set) => ({
   mode: 'new',
   data: null,
   setMode(mode) {
