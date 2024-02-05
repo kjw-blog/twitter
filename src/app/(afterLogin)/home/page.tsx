@@ -38,9 +38,6 @@ export default async function Home() {
         <HydrationBoundary state={dehydratedState}>
           <TabDecider />
         </HydrationBoundary>
-        {/* <Suspense fallback={<Loading />}>
-          <TabDeciderSuspense />
-        </Suspense> */}
       </TabProvider>
     </main>
   );
