@@ -15,7 +15,7 @@ export default function NavMenu() {
   return (
     <>
       <li>
-        <Link href="/home">
+        <Link href="/home" prefetch={true}>
           <div className={style.navPill}>
             {segment === 'home' ? (
               <>

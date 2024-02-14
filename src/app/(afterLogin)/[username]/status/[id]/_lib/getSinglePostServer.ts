@@ -13,6 +13,7 @@ export const getSinglePostServer = async ({
       next: {
         tags: ['posts', id],
       },
+      cache: 'no-store',
       credentials: 'include',
       headers: {
         Cookie: cookies().toString(),

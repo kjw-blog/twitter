@@ -28,6 +28,9 @@ export default function LogoutButton({ me }: Props) {
         method: 'post',
         credentials: 'include',
       });
+      // 라우터 캐시가 기본적으로 30초간 레이아웃을 캐싱하기 떄문에
+      // refresh를 해주면 로그아웃 후 다른 아이디로 로그인 시 이전에 로그인한 캐싱된 유저 정보를 날린다.
+      router.refresh();
       router.replace('/');
     });
   };
