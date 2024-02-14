@@ -7,13 +7,16 @@ export const getUser: QueryFunction<User, [_1: string, string]> = async ({
 }) => {
   const [_1, username] = queryKey;
 
-  const res = await fetch(`http://localhost:9090/api/users/${username}`, {
-    next: {
-      tags: ['users', username],
-    },
-    credentials: 'include',
-    cache: 'no-cache',
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${username}`,
+    {
+      next: {
+        tags: ['users', username],
+      },
+      credentials: 'include',
+      cache: 'no-cache',
+    }
+  );
 
   if (!res.ok) {
     throw new Error('Failed to fetch data');
