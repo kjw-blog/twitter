@@ -5,7 +5,7 @@ export async function middleware() {
   const session = await auth();
 
   if (!session) {
-    return NextResponse.redirect('http://localhost:3000/i/flow/login');
+    return NextResponse.redirect('http://localhost:80/i/flow/login');
   }
 }
 
