@@ -10,6 +10,7 @@ dayjs.locale('ko');
 
 import style from './chatRoom.module.css';
 import BackButton from '@/app/(afterLogin)/_component/BackButton';
+import MessageForm from './_component/MessageForm';
 
 export default function ChatRoom() {
   const user = {
@@ -78,6 +79,7 @@ export default function ChatRoom() {
           );
         })}
       </div>
+      <MessageForm />
     </main>
   );
 }
