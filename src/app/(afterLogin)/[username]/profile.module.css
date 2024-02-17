@@ -81,16 +81,38 @@
   color: white;
   cursor: pointer;
 }
+
+.followButton:hover {
+  background-color: rgb(39, 44, 48);
+}
+
 .followButton.followed {
   background: white;
   color: black;
   border: 1px solid gray;
 }
-.followButton:hover {
-  background-color: rgb(39, 44, 48);
-}
+
 .followButton.followed:hover {
   background-color: lightgray;
+}
+
+.messageButton {
+  border: 1px solid rgb(207, 217, 222);
+  border-radius: 17px;
+  height: 34px;
+  width: 34px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.messageButton:hover {
+  background-color: rgba(15, 20, 25, 0.09);
 }
 
 .backButton {
