@@ -12,6 +12,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { auth } from '@/auth';
 import { getUserServer } from '../../[username]/_lib/getUserServer';
 import UserInfo from './_component/UserInfo';
+import WebSocketComponent from './_component/WebSocketComponent';
 
 type Props = {
   params: { room: string };
@@ -48,6 +49,7 @@ export default async function ChatRoom({ params }: Props) {
 
   return (
     <main className={style.main}>
+      <WebSocketComponent />
       <UserInfo id={ids[0]} />
       <div className={style.list}>
         {messages.map((m) => {
@@ -78,7 +80,7 @@ export default async function ChatRoom({ params }: Props) {
           );
         })}
       </div>
-      <MessageForm />
+      <MessageForm id={ids[0]} />
     </main>
   );
 }

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: '쪽지를 보내보세요.',
 };
 
-export default async function Messages() {
+export default async function Home() {
   const session = await auth();
 
   const rooms = session?.user?.email
@@ -21,7 +21,7 @@ export default async function Messages() {
       <div className={style.header}>
         <h3>쪽지</h3>
       </div>
-      {rooms?.map((room) => (
+      {rooms.map((room) => (
         <Room key={room.room} room={room} />
       ))}
     </main>
