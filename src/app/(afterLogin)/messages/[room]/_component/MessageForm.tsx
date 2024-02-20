@@ -10,6 +10,12 @@ import {
 } from 'react';
 import useSocket from '../_lib/useSocket';
 import { useSession } from 'next-auth/react';
+import {
+  InfiniteData,
+  QueryClient,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { Message } from '@/model/Message';
 
 type Props = {
   id: string;
@@ -19,6 +25,8 @@ export default function MessageForm({ id }: Props) {
   const [content, setContent] = useState('');
   const [socket] = useSocket();
 
+  const queryClient = useQueryClient();
+
   const { data: session } = useSession();
 
   const onChangeContent: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
@@ -27,6 +35,12 @@ export default function MessageForm({ id }: Props) {
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    if (!session?.user?.email) {
+      return;
+    }
+
+    const ids = [session?.user?.email, id];
+    ids.sort();
 
     // socket.io
     socket?.emit('sendMessage', {
@@ -36,6 +50,43 @@ export default function MessageForm({ id }: Props) {
     });
 
     // 리액트 쿼리 데이터에 추가
+
+    const exMessages = queryClient.getQueryData([
+      'rooms',
+      { senderId: session?.user?.email!, receiverId: id },
+      'messages',
+    ]) as InfiniteData<Message[]>;
+
+    if (exMessages && typeof exMessages == 'object') {
+      const newMessages = {
+        ...exMessages,
+        pages: [...exMessages.pages],
+      };
+
+      const lastPage = newMessages.pages.at(-1);
+      const newLastPage = lastPage ? [...lastPage] : [];
+      let lastMessageId = lastPage?.at(-1)?.messageId;
+
+      newLastPage.push({
+        senderId: session?.user?.email,
+        receiverId: id,
+        content,
+        room: ids.join('-'),
+        messageId: lastMessageId ? lastMessageId + 1 : 1,
+        createdAt: new Date(),
+      });
+
+      newMessages.pages[newMessages.pages.length - 1] = newLastPage;
+
+      queryClient.setQueryData(
+        [
+          'rooms',
+          { senderId: session?.user?.email, receiverId: id },
+          'messages',
+        ],
+        newMessages
+      );
+    }
 
     setContent('');
   };
