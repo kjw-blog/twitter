@@ -13,6 +13,7 @@ import { auth } from '@/auth';
 import { getUserServer } from '../../[username]/_lib/getUserServer';
 import UserInfo from './_component/UserInfo';
 import WebSocketComponent from './_component/WebSocketComponent';
+import MessageList from './_component/MessageList';
 
 type Props = {
   params: { room: string };
@@ -51,35 +52,7 @@ export default async function ChatRoom({ params }: Props) {
     <main className={style.main}>
       <WebSocketComponent />
       <UserInfo id={ids[0]} />
-      <div className={style.list}>
-        {messages.map((m) => {
-          if (m.id === 'zerohch0') {
-            return (
-              <div
-                key={m.messageId}
-                className={cx(style.message, style.myMessage)}
-              >
-                <div className={style.content}>{m.content}</div>
-                <div className={style.date}>
-                  {dayjs(m.createdAt).format('YYYY년 MM월 DD일 A HH:mm ')}
-                </div>
-              </div>
-            );
-          }
-
-          return (
-            <div
-              key={m.messageId}
-              className={cx(style.message, style.yourMessage)}
-            >
-              <div className={style.content}>{m.content}</div>
-              <div className={style.date}>
-                {dayjs(m.createdAt).format('YYYY년 MM월 DD일 A HH:mm ')}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <MessageList id={ids[0]} />
       <MessageForm id={ids[0]} />
     </main>
   );
