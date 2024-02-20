@@ -79,17 +79,19 @@ export default function MessageList({ id }: Props) {
     }
   }, [inView, isFetching, hasPreviousPage, fetchPreviousPage, adjustingScroll]);
 
-  let hasMessage = !!messages;
+  let hasMessages = !!messages;
 
   useEffect(() => {
-    if (hasMessage) {
-      if (listRef.current) {
-        listRef.current.scrollTop = listRef.current.scrollHeight;
-      }
-
+    if (hasMessages) {
+      console.log(listRef.current);
+      setTimeout(() => {
+        if (listRef.current) {
+          listRef.current.scrollTop = listRef.current?.scrollHeight;
+        }
+      }, 100);
       setPageRendered(true);
     }
-  }, [hasMessage]);
+  }, [hasMessages]);
 
   useEffect(() => {
     if (shouldGoDown) {
@@ -144,7 +146,7 @@ export default function MessageList({ id }: Props) {
   return (
     <div className={style.list} ref={listRef}>
       {!adjustingScroll && pageRendered && (
-        <div ref={ref} style={{ height: 1, backgroundColor: 'yellow' }} />
+        <div ref={ref} style={{ height: 1 }} />
       )}
       {messages?.pages?.map((page) =>
         page.map((m) => {
