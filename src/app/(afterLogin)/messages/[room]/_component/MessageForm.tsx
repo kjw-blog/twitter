@@ -10,12 +10,9 @@ import {
 } from 'react';
 import useSocket from '../_lib/useSocket';
 import { useSession } from 'next-auth/react';
-import {
-  InfiniteData,
-  QueryClient,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { Message } from '@/model/Message';
+import { useMessageStore } from '@/store/message';
 
 type Props = {
   id: string;
@@ -23,6 +20,7 @@ type Props = {
 
 export default function MessageForm({ id }: Props) {
   const [content, setContent] = useState('');
+  const { setGoDown } = useMessageStore();
   const [socket] = useSocket();
 
   const queryClient = useQueryClient();
@@ -86,20 +84,11 @@ export default function MessageForm({ id }: Props) {
         ],
         newMessages
       );
+      setGoDown(true);
     }
 
     setContent('');
   };
-
-  useEffect(() => {
-    socket?.on('receiveMessage', (data) => {
-      console.log(data);
-    });
-
-    return () => {
-      socket?.off('receiveMessage');
-    };
-  }, [socket]);
 
   return (
     <div className={style.formZone}>

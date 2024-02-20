@@ -7,12 +7,15 @@ import {
   DefaultError,
   InfiniteData,
   useInfiniteQuery,
+  useQueryClient,
 } from '@tanstack/react-query';
 import { getMessages } from '../_lib/getMessages';
 import { useSession } from 'next-auth/react';
 import { Message } from '@/model/Message';
 import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useMessageStore } from '@/store/message';
+import useSocket from '../_lib/useSocket';
 
 type Props = {
   id: string;
@@ -20,6 +23,10 @@ type Props = {
 
 export default function MessageList({ id }: Props) {
   const { data: session } = useSession();
+  const { shouldGoDown, setGoDown } = useMessageStore();
+  const listRef = useRef<HTMLDivElement>(null);
+  const [pageRendered, setPageRendered] = useState(false);
+  const [adjustingScroll, setAdjustingScroll] = useState(false);
 
   const {
     data: messages,
@@ -52,13 +59,93 @@ export default function MessageList({ id }: Props) {
 
   useEffect(() => {
     if (inView) {
-      !isFetching && hasPreviousPage && fetchPreviousPage();
+      if (
+        !isFetching &&
+        hasPreviousPage &&
+        listRef.current &&
+        !adjustingScroll
+      ) {
+        const prevHeight = listRef.current.scrollHeight;
+        fetchPreviousPage().then(() => {
+          setAdjustingScroll(true);
+          setTimeout(() => {
+            listRef.current!.scrollTop =
+              listRef.current!.scrollHeight - prevHeight;
+
+            setAdjustingScroll(false);
+          }, 0);
+        });
+      }
     }
-  }, [inView, isFetching, hasPreviousPage, fetchPreviousPage]);
+  }, [inView, isFetching, hasPreviousPage, fetchPreviousPage, adjustingScroll]);
+
+  let hasMessage = !!messages;
+
+  useEffect(() => {
+    if (hasMessage) {
+      if (listRef.current) {
+        listRef.current.scrollTop = listRef.current.scrollHeight;
+      }
+
+      setPageRendered(true);
+    }
+  }, [hasMessage]);
+
+  useEffect(() => {
+    if (shouldGoDown) {
+      if (listRef.current) {
+        listRef.current.scrollTop = listRef.current.scrollHeight;
+        setGoDown(false);
+      }
+    }
+  }, [shouldGoDown, setGoDown]);
+
+  const [socket] = useSocket();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    socket?.on('receiveMessage', (data) => {
+      const exMessages = queryClient.getQueryData([
+        'rooms',
+        { senderId: session?.user?.email!, receiverId: id },
+        'messages',
+      ]) as InfiniteData<Message[]>;
+
+      if (exMessages && typeof exMessages == 'object') {
+        const newMessages = {
+          ...exMessages,
+          pages: [...exMessages.pages],
+        };
+
+        const lastPage = newMessages.pages.at(-1);
+        const newLastPage = lastPage ? [...lastPage] : [];
+
+        newLastPage.push(data);
+
+        newMessages.pages[newMessages.pages.length - 1] = newLastPage;
+
+        queryClient.setQueryData(
+          [
+            'rooms',
+            { senderId: session?.user?.email, receiverId: id },
+            'messages',
+          ],
+          newMessages
+        );
+        setGoDown(true);
+      }
+    });
+
+    return () => {
+      socket?.off('receiveMessage');
+    };
+  }, [socket, id, queryClient, setGoDown, session?.user?.email]);
 
   return (
-    <div className={style.list}>
-      <div ref={ref} style={{ height: 10, backgroundColor: 'yellow' }} />
+    <div className={style.list} ref={listRef}>
+      {!adjustingScroll && pageRendered && (
+        <div ref={ref} style={{ height: 1, backgroundColor: 'yellow' }} />
+      )}
       {messages?.pages?.map((page) =>
         page.map((m) => {
           if (m.senderId === session?.user?.email) {
