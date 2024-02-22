@@ -1,7 +1,7 @@
 'use client';
 
 import { ChangeEventHandler, FormEventHandler, useState } from 'react';
-import style from '@/app/(beforeLogin)/_component/login.module.css';
+import * as style from '@/app/(beforeLogin)/_component/login.css';
 import { useRouter } from 'next/navigation';
 
 // 클라이언트 환경에서 사용
@@ -68,7 +68,7 @@ export default function LoginModal() {
           </button>
           <div>로그인하세요.</div>
         </div>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className={style.modalForm}>
           <div className={style.modalBody}>
             <div className={style.inputDiv}>
               <label className={style.inputLabel} htmlFor="id">
