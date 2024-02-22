@@ -27,7 +27,26 @@ export const left = style({
   },
 });
 
-globalStyle(`${left} img`, {
+/**
+ * 어떠한 className을 가진 요소의 자식 스타일을 하는 방법은 아래와 같이 2가지가 있는데,
+ * vanilla-extract가 지향하는 방법은 방법 2와 같다.
+ *
+ * 방법 1
+ *
+ * globalStyle(`${left} img`, {
+ *     width: 55,
+ *     height: 65,
+ *     '@media': {
+ *       '(min-width: 1000px)': {
+ *         width: 450,
+ *         height: 550,
+ *       },
+ *     },
+ *  });
+ */
+
+// 방법 2
+export const leftImg = style({
   width: 55,
   height: 65,
   '@media': {
